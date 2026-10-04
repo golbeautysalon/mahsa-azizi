@@ -1,4 +1,4 @@
-const CACHE="mahsa-azizi-v1";
+const CACHE="mahsa-azizi-v3-contact-logo";
 const ASSETS=[
 "./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png",
 "./images/gol-cube.gif","./images/cover.jpg","./images/page01.jpg",
