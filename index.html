@@ -1,0 +1,67 @@
+<!doctype html><html lang="fa" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="theme-color" content="#7b1743">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>آلبوم مهسا عزیزی</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"B Nazanin","BNazanin","Nazanin",Tahoma,Arial,sans-serif}
+body{min-height:100vh;background:radial-gradient(circle at 50% 20%,#7a284a,#3b0d20 58%,#16040b);color:white;display:flex;justify-content:center;align-items:center;overflow-x:hidden}
+.wrap{width:100%;max-width:1150px;text-align:center;padding:10px}h1{font-size:clamp(18px,3vw,28px);margin:0 0 5px}
+.hint{font-size:13px;opacity:.86;margin-bottom:8px}.shell{height:min(78vh,720px);min-height:420px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 24px 24px #0008)}
+#book{margin:auto}.page{background:#fff;overflow:hidden;box-shadow:inset 0 0 16px #0002}
+.page img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;background:#fff;pointer-events:none}
+.cover-page{background:#4f1029;border:6px solid #4f1029;box-shadow:inset 0 0 0 2px #c8a35d}
+.cover-page img{object-fit:contain;background:#faf7f5}
+.back-cover{background:linear-gradient(135deg,#5a1630,#350b1d);display:flex;align-items:center;justify-content:center;border:6px solid #4f1029}
+.back-cover{background:#faf7f5!important}
+.contact-inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:34px 30px;text-align:center;color:#321c26;font-family:"B Nazanin","BNazanin","Nazanin",Tahoma,Arial,sans-serif}
+.contact-inner img{width:52%;height:auto;max-height:43%;object-fit:contain;background:transparent!important;margin-bottom:8px}
+.contact-title{font-size:34px;font-weight:bold;color:#a80856;margin:4px 0 14px}
+.contact-text{font-size:20px;line-height:1.75;margin:2px 0}
+.contact-phone{font-size:23px;font-weight:bold;color:#7b1743;margin:7px 0;direction:rtl}
+@media(max-width:700px){.shell{height:68vh;min-height:390px}}
+
+.installBtn{display:none;margin:7px auto 9px;border:1px solid #c8a35d;background:#fff;color:#7b1743;border-radius:999px;padding:9px 18px;font:inherit;cursor:pointer}
+</style></head><body><div class="wrap">
+<h1>آلبوم نمونه‌کارهای مهسا عزیزی</h1>
+<button id="installBtn" class="installBtn">ذخیره آلبوم روی گوشی</button><div class="hint">صفحه را با انگشت یا ماوس از راست به چپ ورق بزنید</div>
+<div class="shell"><div id="book">
+<div class="page back-cover contact-page" data-density="hard">
+  <img src="./images/last-logo.jpg" alt="اطلاعات سالن">
+</div>
+<div class="page"><img src="./images/page04.jpg" alt="نمونه کار ۳"></div>
+<div class="page"><img src="./images/page03.jpg" alt="نمونه کار ۲"></div>
+<div class="page"><img src="./images/page02.jpg" alt="نمونه کار ۱"></div>
+<div class="page"><img src="./images/page01.jpg" alt="مشخصات مهسا عزیزی"></div>
+<div class="page cover" data-density="hard"><img src="./images/cover.jpg" alt="مهسا عزیزی"></div>
+</div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
+<script>
+window.addEventListener("load",()=>{
+ const pf=new St.PageFlip(document.getElementById("book"),{
+ width:450,height:600,size:"stretch",minWidth:280,maxWidth:520,minHeight:380,maxHeight:740,
+ maxShadowOpacity:.55,showCover:true,mobileScrollSupport:false,usePortrait:true,flippingTime:900,
+ swipeDistance:20,useMouseEvents:true,autoSize:true,drawShadow:true});
+ pf.loadFromHTML(document.querySelectorAll(".page"));
+ setTimeout(()=>{pf.turnToPage(document.querySelectorAll(".page").length-1);},120);
+});
+</script><script>
+let deferredInstall=null;
+const installBtn=document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt',e=>{
+ e.preventDefault(); deferredInstall=e; installBtn.style.display='inline-block';
+});
+installBtn.addEventListener('click',async()=>{
+ if(!deferredInstall)return;
+ deferredInstall.prompt();
+ await deferredInstall.userChoice;
+ deferredInstall=null;
+ installBtn.style.display='none';
+});
+window.addEventListener('appinstalled',()=>installBtn.style.display='none');
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
+}
+</script>
+</body></html>
