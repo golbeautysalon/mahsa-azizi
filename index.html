@@ -22,10 +22,11 @@ body{min-height:100vh;background:radial-gradient(circle at 50% 20%,#7a284a,#3b0d
 .contact-phone{font-size:23px;font-weight:bold;color:#7b1743;margin:7px 0;direction:rtl}
 @media(max-width:700px){.shell{height:68vh;min-height:390px}}
 
-.installBtn{display:none;margin:7px auto 9px;border:1px solid #c8a35d;background:#fff;color:#7b1743;border-radius:999px;padding:9px 18px;font:inherit;cursor:pointer}
+.installBtn{display:inline-block;margin:7px auto 7px;border:1px solid #c8a35d;background:#fff;color:#7b1743;border-radius:999px;padding:10px 18px;font:inherit;font-weight:bold;cursor:pointer}
+.navBtns{display:flex;gap:10px;justify-content:center;margin:8px auto 4px}.navBtn{border:1px solid #c8a35d;background:#fff;color:#7b1743;border-radius:999px;padding:8px 22px;font:inherit;font-weight:bold;cursor:pointer}.modal{display:none;position:fixed;inset:0;background:#0009;z-index:9999;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.modalCard{width:min(92vw,430px);background:#fff;color:#351524;border-radius:22px;padding:22px;box-shadow:0 20px 60px #0008;text-align:right}.modalCard h2{color:#7b1743;text-align:center;margin:0 0 12px}.modalCard ol{padding-right:24px;line-height:2}.modalCard .close{display:block;width:100%;border:0;background:#7b1743;color:#fff;border-radius:999px;padding:10px;font:inherit;font-weight:bold;cursor:pointer;margin-top:10px}.small{font-size:13px;opacity:.8;text-align:center}@media(max-width:700px){.installBtn,.navBtn{font-size:14px;padding:9px 15px}.wrap{padding:6px}.hint{margin-bottom:4px}}
 </style></head><body><div class="wrap">
 <h1>آلبوم نمونه‌کارهای مهسا عزیزی</h1>
-<button id="installBtn" class="installBtn">ذخیره آلبوم روی گوشی</button><div class="hint">صفحه را با انگشت یا ماوس از راست به چپ ورق بزنید</div>
+<button id="installBtn" class="installBtn">📱 نصب آلبوم روی گوشی</button><div class="hint">صفحه را با انگشت یا ماوس از راست به چپ ورق بزنید</div>
 <div class="shell"><div id="book">
 <div class="page back-cover contact-page" data-density="hard">
   <img src="./images/last-logo.jpg" alt="اطلاعات سالن">
@@ -35,33 +36,35 @@ body{min-height:100vh;background:radial-gradient(circle at 50% 20%,#7a284a,#3b0d
 <div class="page"><img src="./images/page02.jpg" alt="نمونه کار ۱"></div>
 <div class="page"><img src="./images/page01.jpg" alt="مشخصات مهسا عزیزی"></div>
 <div class="page cover" data-density="hard"><img src="./images/cover.jpg" alt="مهسا عزیزی"></div>
-</div></div></div>
+</div></div><div class="navBtns"><button id="prevBtn" class="navBtn">قبلی</button><button id="nextBtn" class="navBtn">بعدی</button></div></div>
+<div id="installModal" class="modal"><div class="modalCard"><h2>نصب آلبوم روی گوشی</h2><div id="installHelp"></div><button id="closeModal" class="close">متوجه شدم</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
 <script>
+let pf;
 window.addEventListener("load",()=>{
- const pf=new St.PageFlip(document.getElementById("book"),{
+ pf=new St.PageFlip(document.getElementById("book"),{
  width:450,height:600,size:"stretch",minWidth:280,maxWidth:520,minHeight:380,maxHeight:740,
  maxShadowOpacity:.55,showCover:true,mobileScrollSupport:false,usePortrait:true,flippingTime:900,
  swipeDistance:20,useMouseEvents:true,autoSize:true,drawShadow:true});
  pf.loadFromHTML(document.querySelectorAll(".page"));
- setTimeout(()=>{pf.turnToPage(document.querySelectorAll(".page").length-1);},120);
+ setTimeout(()=>pf.turnToPage(document.querySelectorAll(".page").length-1),120);
 });
-</script><script>
+document.getElementById('nextBtn').addEventListener('click',()=>pf&&pf.flipPrev('top'));
+document.getElementById('prevBtn').addEventListener('click',()=>pf&&pf.flipNext('top'));
 let deferredInstall=null;
-const installBtn=document.getElementById('installBtn');
-window.addEventListener('beforeinstallprompt',e=>{
- e.preventDefault(); deferredInstall=e; installBtn.style.display='inline-block';
-});
+const installBtn=document.getElementById('installBtn'), modal=document.getElementById('installModal'), help=document.getElementById('installHelp');
+const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone=window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;});
 installBtn.addEventListener('click',async()=>{
- if(!deferredInstall)return;
- deferredInstall.prompt();
- await deferredInstall.userChoice;
- deferredInstall=null;
- installBtn.style.display='none';
+ if(isStandalone){help.innerHTML='<p style="text-align:center">✅ این آلبوم قبلاً روی گوشی نصب شده است.</p>';modal.classList.add('show');return;}
+ if(deferredInstall){deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;return;}
+ if(isiOS){help.innerHTML='<ol><li>آلبوم را در <b>Safari</b> باز کنید.</li><li>دکمه <b>Share / اشتراک‌گذاری</b> را بزنید.</li><li><b>Add to Home Screen</b> را انتخاب کنید.</li><li>در پایان <b>Add</b> را بزنید.</li></ol><div class="small">پس از آن آیکون آلبوم مانند یک برنامه روی صفحه گوشی قرار می‌گیرد.</div>';
+ }else{help.innerHTML='<ol><li>منوی مرورگر <b>⋮</b> را باز کنید.</li><li>گزینه <b>Install app</b> یا <b>Add to Home screen</b> را بزنید.</li><li>گزینه <b>Install / نصب</b> را تأیید کنید.</li></ol>'; }
+ modal.classList.add('show');
 });
-window.addEventListener('appinstalled',()=>installBtn.style.display='none');
-if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
-}
+document.getElementById('closeModal').onclick=()=>modal.classList.remove('show');
+modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+if('serviceWorker' in navigator){window.addEventListener('load',async()=>{try{const r=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});await r.update();}catch(e){}});}
 </script>
 </body></html>
